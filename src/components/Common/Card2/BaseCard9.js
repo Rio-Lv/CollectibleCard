@@ -5,13 +5,7 @@ const timer = 0;
 const Base = styled.div`
   position: absolute;
   border: 3px solid red;
-  perspective: 1700;
-`;
-// shiny
-const CircleS = styled.div`
-  background-color: white;
-  box-shadow: 0px 0px ${4}vw ${4}vw #fff;
-  z-index: 2;
+  perspective: 1000;
 `;
 //styling
 const Card = styled.div`
@@ -21,46 +15,38 @@ const Card = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   transition: ${timer}s ease;
-  z-index:1;
 `;
 const ImageBox = styled.div`
   position: absolute;
   transition: ${timer}s ease;
-  z-index:3;
 `;
 const Image = styled.div`
   position: absolute;
   transition: ${timer}s ease;
-  z-index:5;
 `;
 const TrapTop = styled.div`
   position: absolute;
   transition: ${timer}s ease;
-  z-index:3;
 `;
 const TrapTopInner = styled.div`
   position: absolute;
   transition: ${timer}s ease;
-  z-index:3;
 `;
 const TrapBot = styled.div`
   position: absolute;
   transition: ${timer}s ease;
-  z-index:3;
 `;
 const TrapBotInner = styled.div`
   position: absolute;
   transition: ${timer}s ease;
-  z-index:6;
 `;
 const Title = styled.div`
   position: absolute;
   font-family: "Josefin Sans", sans-serif;
   width: 100%;
   font-weight: 600;
-
+  z-index: 10;
   transition: ${timer}s ease;
-  z-index:5;
 `;
 const Cycle = styled.div`
   margin: auto;
@@ -71,7 +57,6 @@ const Cycle = styled.div`
   font-weight: 600;
   z-index: 10;
   transition: ${timer}s ease;
-  z-index:4;
 `;
 const Name = styled.div`
   position: absolute;
@@ -80,14 +65,11 @@ const Name = styled.div`
   font-weight: 600;
   z-index: 10;
   transition: ${timer}s ease;
-  z-index:7;
 `;
 
 function BaseCard9(props) {
   const backRef = useRef();
   const cardRef = useRef();
-  const circleRef = useRef();
-
   const [shrink, set_shrink] = useState(props.shrink);
   //hover effects
   const [offsetLeft, setOffsetLeft] = useState(0);
@@ -101,11 +83,6 @@ function BaseCard9(props) {
 
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
-
-  const [circleOpacity,setCircleOpacity] = useState(0);
-  const [circleX,setCircleX] = useState(.5);
-  const [circleY,setCircleY] = useState(.5);
-  
   // color
   const [image_color, set_image_color] = useState("#3a0000");
   const [title_color, set_title_color] = useState("#fad4d4");
@@ -303,7 +280,7 @@ function BaseCard9(props) {
   }, [backRef]);
 
   const rotate = (percentX, percentY) => {
-    const max_angle = 16;
+    const max_angle = 20;
     if (percentX > 0.5) {
       setRotateY(-max_angle * (percentX * percentX - 0.5));
     }
@@ -317,23 +294,9 @@ function BaseCard9(props) {
       setRotateX(-max_angle * (0.5 - percentY * percentY));
     }
   };
-  const shadow = (percentX, percentY) => {
-    const scaler = cardWidth / 10;
-    // at 50%, pos is zero in the center
-    const newX = (percentX - 0.5) * 2; // value from -1 to 1
-    const newY = (percentY - 0.5) * 2;
-
-    setCircleOpacity(0.20);
-
-    setCircleX(-newX * scaler);
-    setCircleY(-newY * scaler);
-  };
   useEffect(() => {
     rotate(percentX, percentY);
-    shadow(percentX,percentY);
   }, [percentX, percentY]);
-
-
 
   return (
     <Base
@@ -347,9 +310,6 @@ function BaseCard9(props) {
         console.log("leaving");
         setRotateX(0);
         setRotateY(0);
-        setCircleX(.5);
-        setCircleY(.5);
-        setCircleOpacity(0);
       }}
       onMouseMove={(e) => {
         setPercentX(
@@ -368,7 +328,6 @@ function BaseCard9(props) {
       <Card
         ref={cardRef}
         style={{
-          overflow:"hidden",
           width: `${card_width}vw`,
           height: `${card_height}vw`,
           backgroundColor: `${card_color}`,
@@ -432,7 +391,6 @@ function BaseCard9(props) {
             borderBottom: `${trap_v_thic}vw solid ${trap_color}`,
             marginLeft: `${trap_margin_left}vw`,
             bottom: `${trapbot_bot}vw`,
-            
           }}
         ></TrapBot>
         <TrapBotInner
@@ -473,16 +431,6 @@ function BaseCard9(props) {
         >
           TEST USERNAME SIXSIX
         </Name>
-        <CircleS
-          ref={circleRef}
-          style={{
-            borderRadius:`${image_width}vw`,
-            width:`${image_width}vw`,
-            height:`${image_width}vw`,
-            transform: `translate(${circleX}%,${circleY}%)`, //circle offsets
-            opacity: `${circleOpacity * 2}`,
-          }}
-        ></CircleS>
       </Card>
     </Base>
   );
