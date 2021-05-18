@@ -25,16 +25,31 @@ function Main() {
       <Login></Login>
       {/* <Admin></Admin> */}
 
-
       <div style={{ position: "fixed", top: "10%", left: "52%" }}>
         {/* <Circle></Circle> */}
-        <BaseCard9
-          k={30}
-          url={
-            "https://preview.redd.it/bwwbyjm8lwt21.jpg?width=960&crop=smart&auto=webp&s=bb78cc90532d10d0a9077d7eff03f13e98fad65d"
-          }
-          shrink={1}
-        ></BaseCard9>
+        
+   
+        <div 
+        style={{ position: "fixed", top: "10%", left: "2%" }}
+        onClick ={()=>{
+          console.log("div clicked")
+        }}
+        >
+          
+          
+          <BaseCard9
+            k={20}
+            url={
+              "https://preview.redd.it/bwwbyjm8lwt21.jpg?width=960&crop=smart&auto=webp&s=bb78cc90532d10d0a9077d7eff03f13e98fad65d"
+            }
+            shrink={1}
+            trapColor={"rgb(0,0,0,.8)"}
+            liningColor={"rgb(0,0,0,.8)"}
+            textColor={"#888888"}
+            cycleColor={"#000000"}
+            cardColor={"rgb(0,0,0,.8)"}
+          ></BaseCard9>
+        </div>
       </div>
     </div>
   );
@@ -42,30 +57,30 @@ function Main() {
 
 export default Main;
 
-      // {/* <div style={{ position: "fixed", top: "10%", left: "50%" }}>
-      //   <Card id="testID"></Card>
-      //   <BaseCard4></BaseCard4>
-      // </div>
-      
-      // <div style={{ position: "fixed", top: "10%", left: "27%" }}>
-      //   <BaseCard2></BaseCard2>
-      // </div> */}
-      // <div style={{ position: "fixed", top: "2%", left: "5%" }}>
-      //   <MainCard></MainCard>
-      // </div>
+// {/* <div style={{ position: "fixed", top: "10%", left: "50%" }}>
+//   <Card id="testID"></Card>
+//   <BaseCard4></BaseCard4>
+// </div>
 
-      // <div style={{ position: "fixed", top: "2%", left: "5%" }}>
-      //   <BaseCard5></BaseCard5>
-      // </div>
+// <div style={{ position: "fixed", top: "10%", left: "27%" }}>
+//   <BaseCard2></BaseCard2>
+// </div> */}
+// <div style={{ position: "fixed", top: "2%", left: "5%" }}>
+//   <MainCard></MainCard>
+// </div>
 
-      // <div style={{ position: "fixed", top: "2%", left: "50%" }}>
-      //   <BaseCard6></BaseCard6>
-      // </div>
-      // <div style={{ position: "fixed", top: "2%", left: "20%" }}>
-      //   <BaseCard7></BaseCard7>
-      // </div>
+// <div style={{ position: "fixed", top: "2%", left: "5%" }}>
+//   <BaseCard5></BaseCard5>
+// </div>
 
-      // <div style={{ position: "fixed", top: "10%", left: "18%" }}>
-      //   {/* <Circle></Circle> */}
-      //   <BaseCard8 k={30}></BaseCard8>
-      // </div>
+// <div style={{ position: "fixed", top: "2%", left: "50%" }}>
+//   <BaseCard6></BaseCard6>
+// </div>
+// <div style={{ position: "fixed", top: "2%", left: "20%" }}>
+//   <BaseCard7></BaseCard7>
+// </div>
+
+// <div style={{ position: "fixed", top: "10%", left: "18%" }}>
+//   {/* <Circle></Circle> */}
+//   <BaseCard8 k={30}></BaseCard8>
+// </div>

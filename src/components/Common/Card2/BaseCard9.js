@@ -1,44 +1,57 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+
 import "./style.css";
-const timer = 0;
+
+const timer = 0.2;
 const Base = styled.div`
   position: absolute;
-  border: 3px solid red;
-  perspective: 1000;
+  /* border: 3px solid red; */
+  perspective: 1200;
+  transition: ${timer}s ease;
+`;
+const Circle = styled.div`
+  background-color: white;
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 0 ${6}vw ${6}vw #fff;
+  z-index: 5;
 `;
 //styling
 const Card = styled.div`
   position: relative;
   text-align: center;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   transition: ${timer}s ease;
 `;
 const ImageBox = styled.div`
   position: absolute;
   transition: ${timer}s ease;
+  z-index: 4;
 `;
 const Image = styled.div`
   position: absolute;
   transition: ${timer}s ease;
+  z-index: 7;
 `;
 const TrapTop = styled.div`
   position: absolute;
   transition: ${timer}s ease;
+  z-index: 4;
 `;
 const TrapTopInner = styled.div`
   position: absolute;
   transition: ${timer}s ease;
+  z-index: 6;
 `;
 const TrapBot = styled.div`
   position: absolute;
   transition: ${timer}s ease;
+  z-index: 4;
 `;
 const TrapBotInner = styled.div`
   position: absolute;
   transition: ${timer}s ease;
+  z-index: 6;
 `;
 const Title = styled.div`
   position: absolute;
@@ -63,8 +76,8 @@ const Name = styled.div`
   font-family: "Josefin Sans", sans-serif;
   width: 100%;
   font-weight: 600;
-  z-index: 10;
   transition: ${timer}s ease;
+  z-index: 10;
 `;
 
 function BaseCard9(props) {
@@ -72,17 +85,19 @@ function BaseCard9(props) {
   const cardRef = useRef();
   const [shrink, set_shrink] = useState(props.shrink);
   //hover effects
-  const [offsetLeft, setOffsetLeft] = useState(0);
-  const [offsetTop, setOffsetTop] = useState(0);
-
-  const [cardWidth, setCardWidth] = useState(0);
-  const [cardHeight, setCardHeight] = useState(0);
 
   const [percentX, setPercentX] = useState(0.5);
   const [percentY, setPercentY] = useState(0.5);
 
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
+
+  const [circleX, setCircleX] = useState(0.5);
+  const [circleY, setCircleY] = useState(0.5);
+
+  const [rotationSpeed, setRotationSpeed] = useState(0.5);
+
+  const [circleOpacity, setCircleOpacity] = useState(0);
   // color
   const [image_color, set_image_color] = useState("#3a0000");
   const [title_color, set_title_color] = useState("#fad4d4");
@@ -91,7 +106,7 @@ function BaseCard9(props) {
   const [card_color, set_card_color] = useState("#8b1e1e");
   const [card_border_color, set_card_border_color] = useState("#000000");
   const [innerborder_color, set_innerborder_color] = useState("#000000");
-  const [card_inner_color, set_card_inner_color] = useState("#0f0f0f");
+  const [card_inner_color, set_card_inner_color] = useState("#000000");
   // ratio constant
   const [k, set_k] = useState(props.k);
   // radii
@@ -163,23 +178,16 @@ function BaseCard9(props) {
   const [name_bot, set_name_bot] = useState(-k / 90);
   const [cycle_bot, set_cycle_bot] = useState(k / 13.5);
 
-  useEffect(() => {
-    setOffsetLeft(backRef.current.offsetLeft);
-    setOffsetTop(backRef.current.offsetTop);
-
-    setCardWidth(cardRef.current.offsetWidth);
-    setCardHeight(cardRef.current.offsetHeight);
-  }, [cardRef]);
-
   // Color changes
   useEffect(() => {
     set_image_color("#3a0000");
-    const cardColor = "rgb(170,20,20)";
-    const textColor = "#ffecec";
-    const liningColor = "#000000";
-    const trapColor = "#181818";
+    const cardColor = props.cardColor ;
+    const textColor = props.textColor;
+    const cycleColor = props.cycleColor;
+    const liningColor = props.liningColor;
+    const trapColor = props.trapColor;
     set_title_color(textColor);
-    set_cycle_color(textColor);
+    set_cycle_color(cycleColor);
     set_name_color(textColor);
 
     set_card_color(cardColor);
@@ -190,7 +198,7 @@ function BaseCard9(props) {
 
     set_card_inner_color(trapColor);
     set_trap_color_inner(trapColor);
-  }, [props.k, shrink]);
+  }, [props]);
   //Update k
   useEffect(() => {
     set_k(props.k);
@@ -251,11 +259,7 @@ function BaseCard9(props) {
         ((1 - props.shrink) * k) / 400
     );
   }, [image_width, imagebox_height, props.shrink]);
-  // shrink = 1   x = 0.03
-  // shrink = 0 x = 1
-  //f(1) = 1                  1-shrink*.97
-  //f(0) = 0.03
-  // fifth order
+
   useEffect(() => {
     set_trap_margin_left_inner(
       (k - trap_width_inner - trap_h_thic_inner * 2) / 2
@@ -274,13 +278,11 @@ function BaseCard9(props) {
 
   // hover effect functions
   useEffect(() => {
-    setOffsetLeft(backRef.current.offsetLeft);
-    setOffsetTop(backRef.current.offsetTop);
     console.log(backRef.current.offsetLeft);
   }, [backRef]);
 
   const rotate = (percentX, percentY) => {
-    const max_angle = 20;
+    const max_angle = 10;
     if (percentX > 0.5) {
       setRotateY(-max_angle * (percentX * percentX - 0.5));
     }
@@ -294,8 +296,15 @@ function BaseCard9(props) {
       setRotateX(-max_angle * (0.5 - percentY * percentY));
     }
   };
+
+  const shadow = (percentX, percentY) => {
+    setCircleX(1 - percentX);
+    setCircleY(1 - percentY);
+  };
+
   useEffect(() => {
     rotate(percentX, percentY);
+    shadow(percentX, percentY);
   }, [percentX, percentY]);
 
   return (
@@ -304,12 +313,23 @@ function BaseCard9(props) {
       style={{
         width: `${card_width * 1.03}vw`,
         height: `${card_height + card_edge_bot * 2}vw`,
-        border: "3px solid blue",
+        // border: "3px solid blue",
+        
+      }}
+      onMouseEnter={() => {
+        setCircleOpacity(0.15);
+        setTimeout(() => {
+          setRotationSpeed(0);
+        }, 500);
       }}
       onMouseLeave={() => {
         console.log("leaving");
         setRotateX(0);
         setRotateY(0);
+        setCircleOpacity(0);
+        setCircleX(0.5);
+        setCircleY(0.5);
+        setRotationSpeed(0.5);
       }}
       onMouseMove={(e) => {
         setPercentX(
@@ -325,113 +345,136 @@ function BaseCard9(props) {
         console.log(`X:${percentX.toFixed(3)}, Y:${percentY.toFixed(3)}`);
       }}
     >
-      <Card
-        ref={cardRef}
+      <div
         style={{
-          width: `${card_width}vw`,
-          height: `${card_height}vw`,
-          backgroundColor: `${card_color}`,
-          borderRadius: `${card_radius}vw`,
-          border: `${card_edge}vw solid ${card_border_color}`,
-          borderBottom: `${card_edge_bot}vw solid ${card_border_color}`,
-          borderTop: `${
-            props.shrink === 0 ? card_edge_bot : card_edge
-          }vw solid ${card_border_color}`,
+          overflow: "hidden",
+          left: "50%",
+          top: "50%",
+          position: "absolute",
           transform: `translate(-50%, -50%) rotateX(${rotateX}deg) rotateY(${rotateY}deg) `,
+          transition: `${timer}s,transform ${rotationSpeed}s`,
+          borderRadius: `${card_radius}vw`,
         }}
       >
-        <ImageBox
+        <Card
+          ref={cardRef}
           style={{
-            width: `${imagebox_width}vw`,
-            height: `${imagebox_height}vw`,
-            backgroundColor: `${innerborder_color}`,
-            margin: `${imagebox_margin}vw`,
-            borderRadius: `${imagebox_radius * 1.8}vw`,
-            borderBottomLeftRadius: `${imagebox_radius * 0.8}vw`,
-            borderBottomRightRadius: `${imagebox_radius * 0.8}vw`,
-          }}
-        ></ImageBox>
-        <Image
-          style={{
-            width: `${image_width}vw`,
-            height: `${image_height}vw`,
-            backgroundcolor: `${image_color}`,
-            margin: `${image_margin}vw`,
-            borderRadius: `${image_radius}vw`,
-            top: `${image_top}vw`,
-            background: `url(${props.url})`,
-            backgroundSize: "100% 100%",
-          }}
-        ></Image>
-        <TrapTop
-          style={{
-            width: `${trap_width}vw`,
-            borderLeft: `${trap_h_thic}vw solid transparent`,
-            borderRight: `${trap_h_thic}vw solid transparent`,
-            borderTop: `${trap_v_thic}vw solid ${innerborder_color}`,
-            marginLeft: `${trap_margin_left}vw`,
-            top: `${traptop_top}vw`,
-          }}
-        ></TrapTop>
-        <TrapTopInner
-          style={{
-            width: `${trap_width_inner}vw`,
-            borderLeft: `${trap_h_thic_inner}vw solid transparent`,
-            borderRight: `${trap_h_thic_inner}vw solid transparent`,
-            borderTop: `${trap_v_thic_inner}vw solid ${trap_color_inner}`,
-            marginLeft: `${trap_margin_left_inner}vw`,
-            top: `${traptop_top_inner}vw`,
-          }}
-        ></TrapTopInner>
-        <TrapBot
-          style={{
-            width: `${trap_width}vw`,
-            borderLeft: `${trap_h_thic}vw solid transparent`,
-            borderRight: `${trap_h_thic}vw solid transparent`,
-            borderBottom: `${trap_v_thic}vw solid ${trap_color}`,
-            marginLeft: `${trap_margin_left}vw`,
-            bottom: `${trapbot_bot}vw`,
-          }}
-        ></TrapBot>
-        <TrapBotInner
-          style={{
-            width: `${trap_width_inner}vw`,
-            borderLeft: `${trap_h_thic_inner}vw solid transparent`,
-            borderRight: `${trap_h_thic_inner}vw solid transparent`,
-            borderBottom: `${trap_v_thic_inner}vw solid ${trap_color_inner}`,
-            marginLeft: `${trap_margin_left_inner}vw`,
-            bottom: `${trapbot_bot_inner}vw`,
-          }}
-        ></TrapBotInner>
-        <Title
-          style={{
-            top: `${title_top}vw`,
-            fontSize: `${title_size}vw`,
-            color: `${title_color}`,
+            width: `${card_width}vw`,
+            height: `${card_height}vw`,
+            backgroundColor: `${card_color}`,
+            borderRadius: `${card_radius}vw`,
+            border: `${card_edge}vw solid ${card_border_color}`,
+            borderBottom: `${card_edge_bot}vw solid ${card_border_color}`,
+            borderTop: `${
+              props.shrink === 0 ? card_edge_bot : card_edge
+            }vw solid ${card_border_color}`,
           }}
         >
-          CAT DRAGON
-        </Title>
-        <Cycle
-          style={{
-            height: `${cycle_size}vw`,
-            bottom: `${cycle_bot}vw`,
-            fontSize: `${cycle_size}vw`,
-            color: `${cycle_color}`,
-          }}
-        >
-          18723
-        </Cycle>
-        <Name
-          style={{
-            bottom: `${name_bot}vw`,
-            fontSize: `${title_size}vw`,
-            color: `${name_color}`,
-          }}
-        >
-          TEST USERNAME SIXSIX
-        </Name>
-      </Card>
+          <ImageBox
+            style={{
+              width: `${imagebox_width}vw`,
+              height: `${imagebox_height}vw`,
+              backgroundColor: `${innerborder_color}`,
+              margin: `${imagebox_margin}vw`,
+              borderRadius: `${imagebox_radius * 1.8}vw`,
+              borderBottomLeftRadius: `${imagebox_radius * 0.8}vw`,
+              borderBottomRightRadius: `${imagebox_radius * 0.8}vw`,
+            }}
+          ></ImageBox>
+          <Image
+            style={{
+              width: `${image_width}vw`,
+              height: `${image_height}vw`,
+              backgroundcolor: `${image_color}`,
+              margin: `${image_margin}vw`,
+              borderRadius: `${image_radius}vw`,
+              top: `${image_top}vw`,
+              background: `url(${props.url})`,
+              backgroundSize: "100% 100%",
+            }}
+          ></Image>
+          <TrapTop
+            style={{
+              width: `${trap_width}vw`,
+              borderLeft: `${trap_h_thic}vw solid transparent`,
+              borderRight: `${trap_h_thic}vw solid transparent`,
+              borderTop: `${trap_v_thic}vw solid ${innerborder_color}`,
+              marginLeft: `${trap_margin_left}vw`,
+              top: `${traptop_top}vw`,
+            }}
+          ></TrapTop>
+          <TrapTopInner
+            style={{
+              width: `${trap_width_inner}vw`,
+              borderLeft: `${trap_h_thic_inner}vw solid transparent`,
+              borderRight: `${trap_h_thic_inner}vw solid transparent`,
+              borderTop: `${trap_v_thic_inner}vw solid ${trap_color_inner}`,
+              marginLeft: `${trap_margin_left_inner}vw`,
+              top: `${traptop_top_inner}vw`,
+            }}
+          ></TrapTopInner>
+          <TrapBot
+            style={{
+              width: `${trap_width}vw`,
+              borderLeft: `${trap_h_thic}vw solid transparent`,
+              borderRight: `${trap_h_thic}vw solid transparent`,
+              borderBottom: `${trap_v_thic}vw solid ${trap_color}`,
+              marginLeft: `${trap_margin_left}vw`,
+              bottom: `${trapbot_bot}vw`,
+            }}
+          ></TrapBot>
+          <TrapBotInner
+            style={{
+              width: `${trap_width_inner}vw`,
+              borderLeft: `${trap_h_thic_inner}vw solid transparent`,
+              borderRight: `${trap_h_thic_inner}vw solid transparent`,
+              borderBottom: `${trap_v_thic_inner}vw solid ${trap_color_inner}`,
+              marginLeft: `${trap_margin_left_inner}vw`,
+              bottom: `${trapbot_bot_inner}vw`,
+            }}
+          ></TrapBotInner>
+          <Title
+            style={{
+              top: `${title_top}vw`,
+              fontSize: `${title_size}vw`,
+              color: `${title_color}`,
+            }}
+          >
+            CAT DRAGON
+          </Title>
+          <Cycle
+            style={{
+              height: `${cycle_size}vw`,
+              bottom: `${cycle_bot}vw`,
+              fontSize: `${cycle_size}vw`,
+              color: `${cycle_color}`,
+              backgroundClip: "text",
+            }}
+          >
+            18723
+          </Cycle>
+          <Name
+            style={{
+              bottom: `${name_bot}vw`,
+              fontSize: `${title_size}vw`,
+              color: `${name_color}`,
+            }}
+          >
+            TEST USERNAME SIXSIX
+          </Name>
+          <Circle
+            style={{
+              opacity: `${circleOpacity}`,
+              transform: `translate(-50%,-50%)`,
+              width: `${card_width}vw`,
+              height: `${card_width}vw`,
+              left: `${circleX * 100}%`,
+              top: `${circleY * 100}%`,
+              transition: `${rotationSpeed}s`,
+            }}
+          ></Circle>
+        </Card>
+      </div>
     </Base>
   );
 }
