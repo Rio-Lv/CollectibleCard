@@ -1,12 +1,12 @@
 import React from "react";
-import "./app.css"
+
 import { SelectorProvider } from "./Control/SelectorContext";
-import Main from "./components/Main"
+import Main from "./components/Main";
 
 function App() {
   return (
     <SelectorProvider>
-      <div className="App">
+      <div>
         <Main></Main>
       </div>
     </SelectorProvider>
