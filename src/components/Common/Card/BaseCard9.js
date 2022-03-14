@@ -5,16 +5,15 @@ import "./style.css";
 
 const timer = 0.2;
 const Base = styled.div`
-  position: absolute;
+  position:relative;
   /* border: 3px solid red; */
-  perspective: 1200;
+
   transition: ${timer}s ease;
 `;
 const Circle = styled.div`
-  background-color: white;
   position: absolute;
   border-radius: 50%;
-  box-shadow: 0 0 ${6}vw ${6}vw #fff;
+
   z-index: 5;
 `;
 //styling
@@ -22,6 +21,7 @@ const Card = styled.div`
   position: relative;
   text-align: center;
   transition: ${timer}s ease;
+  cursor: pointer;
 `;
 const ImageBox = styled.div`
   position: absolute;
@@ -70,6 +70,7 @@ const Cycle = styled.div`
   font-weight: 600;
   z-index: 10;
   transition: ${timer}s ease;
+  cursor: pointer;
 `;
 const Name = styled.div`
   position: absolute;
@@ -99,10 +100,10 @@ function BaseCard9(props) {
 
   const [circleOpacity, setCircleOpacity] = useState(0);
   // color
-  const [image_color, set_image_color] = useState("#3a0000");
-  const [title_color, set_title_color] = useState("#fad4d4");
-  const [cycle_color, set_cycle_color] = useState("#ebcbcb");
-  const [name_color, set_name_color] = useState("#fad4d4");
+  const [image_color, set_image_color] = useState("#000000");
+  const [title_color, set_title_color] = useState("#000000");
+  const [cycle_color, set_cycle_color] = useState("#000000");
+  const [name_color, set_name_color] = useState("#000000");
   const [card_color, set_card_color] = useState("#8b1e1e");
   const [card_border_color, set_card_border_color] = useState("#000000");
   const [innerborder_color, set_innerborder_color] = useState("#000000");
@@ -180,8 +181,8 @@ function BaseCard9(props) {
 
   // Color changes
   useEffect(() => {
-    set_image_color("#3a0000");
-    const cardColor = props.cardColor ;
+    set_image_color("#000000");
+    const cardColor = props.cardColor;
     const textColor = props.textColor;
     const cycleColor = props.cycleColor;
     const liningColor = props.liningColor;
@@ -282,18 +283,18 @@ function BaseCard9(props) {
   }, [backRef]);
 
   const rotate = (percentX, percentY) => {
-    const max_angle = 10;
+    const max_angle = 15;
     if (percentX > 0.5) {
-      setRotateY(-max_angle * (percentX * percentX - 0.5));
+      setRotateY(-max_angle * (percentX- 0.5));
     }
     if (percentX < 0.5) {
-      setRotateY(max_angle * (0.5 - percentX * percentX));
+      setRotateY(max_angle * (0.5 - percentX ));
     }
     if (percentY < 0.5) {
-      setRotateX(max_angle * (percentY * percentY - 0.5));
+      setRotateX(max_angle * (percentY  - 0.5));
     }
     if (percentY > 0.5) {
-      setRotateX(-max_angle * (0.5 - percentY * percentY));
+      setRotateX(-max_angle * (0.5 -  percentY));
     }
   };
 
@@ -311,25 +312,27 @@ function BaseCard9(props) {
     <Base
       ref={backRef}
       style={{
-        width: `${card_width * 1.03}vw`,
-        height: `${card_height + card_edge_bot * 2}vw`,
+        width: `${card_width * 1.05}vw`,
+        height: `${card_height + card_edge_bot * 3}vw`,
+        perspective: k * 100,
         // border: "3px solid blue",
-        
       }}
       onMouseEnter={() => {
-        setCircleOpacity(0.15);
+        setCircleOpacity(props.circleOpacity);
         setTimeout(() => {
           setRotationSpeed(0);
         }, 500);
       }}
       onMouseLeave={() => {
         console.log("leaving");
-        setRotateX(0);
-        setRotateY(0);
-        setCircleOpacity(0);
-        setCircleX(0.5);
-        setCircleY(0.5);
-        setRotationSpeed(0.5);
+        setTimeout(() => {
+          setRotateX(0);
+          setRotateY(0);
+          setCircleOpacity(0);
+          setCircleX(0.5);
+          setCircleY(0.5);
+          setRotationSpeed(0.5);
+        }, 100);
       }}
       onMouseMove={(e) => {
         setPercentX(
@@ -342,7 +345,7 @@ function BaseCard9(props) {
         );
       }}
       onClick={(e) => {
-        console.log(`X:${percentX.toFixed(3)}, Y:${percentY.toFixed(3)}`);
+        console.log(`X:${percentX.toFixed(3)*100}, Y:${percentY.toFixed(3)*100}`);
       }}
     >
       <div
@@ -362,6 +365,7 @@ function BaseCard9(props) {
             width: `${card_width}vw`,
             height: `${card_height}vw`,
             backgroundColor: `${card_color}`,
+            backgroundImage: `${card_color}`,
             borderRadius: `${card_radius}vw`,
             border: `${card_edge}vw solid ${card_border_color}`,
             borderBottom: `${card_edge_bot}vw solid ${card_border_color}`,
@@ -466,11 +470,13 @@ function BaseCard9(props) {
             style={{
               opacity: `${circleOpacity}`,
               transform: `translate(-50%,-50%)`,
-              width: `${card_width}vw`,
-              height: `${card_width}vw`,
+              width: `${card_width * 0.8}vw`,
+              height: `${card_width * 0.8}vw`,
               left: `${circleX * 100}%`,
               top: `${circleY * 100}%`,
               transition: `${rotationSpeed}s`,
+              backgroundColor: `${props.circleColor}`,
+              boxShadow: `0 0 ${6}vw ${6}vw ${props.circleColor}`,
             }}
           ></Circle>
         </Card>
